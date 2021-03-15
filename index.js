@@ -4,10 +4,20 @@ const morgan = require('morgan')
 const app = express()
 app.use(express.json())
 
+app.use(morgan('dev'))
 
-app.use(morgan({
-    connectionString: 'localhost:3001'
-}));
+morgan.token('myTokenBody', (req)=>{
+    return JSON.stringify(req.body)
+    // if(req.body){return JSON.stringify(req.body)}
+    // return ''
+}) 
+
+app.use(
+    morgan(
+        ':method :url :status :res[content-length] :myTokenBody - :response-time ms'
+    // connectionString: 'localhost:3001'
+    )
+)
 
 const personas = [
     {
@@ -65,5 +75,10 @@ app.post("/api/persons/newPersons", (req, resp) => {
     console.log(resultPersons)
     resp.status(201).json(newPerson)
 });
+
+const PORT = 3001
+app.listen(PORT, ()=>{
+    console.log(`server running on http://localhost:${PORT}`)
+})
 
 
