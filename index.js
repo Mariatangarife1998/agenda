@@ -2,10 +2,8 @@ const express = require('express')
 const morgan = require('morgan')
 
 const app = express()
+app.use(express.json())
 
-app.listen(3001,()=>{
-    console.log('server running on http://localhost:3001/api/persons');
-});
 
 app.use(morgan({
     connectionString: 'localhost:3001'
@@ -52,8 +50,6 @@ app.get('/api/persons/:id', (req, res) => {
     }else {
         resp.status(404).end();
     }
-    
-
 });
 
 app.delete("/api/persons/delete/:id", (req, res) =>{ 
@@ -62,16 +58,12 @@ app.delete("/api/persons/delete/:id", (req, res) =>{
     res.send(resultPersons);
    });
 
-app.post("/api/persons/newPersons/:name", (req, res) => {
-const newPerson = req.body.name;
-personas.push({
-    id: Math.random() * 100,
-    name: req.params.name,
-    number: req.params.number
-    
-}); 
-    
-    res.redirect("/api/persons");
+app.post("/api/persons/newPersons", (req, resp) => {
+    const newPerson = req.body
+    console.log(newPerson);
+    const resultPersons = personas.concat(newPerson)
+    console.log(resultPersons)
+    resp.status(201).json(newPerson)
 });
-// console.log(personas);
+
 
